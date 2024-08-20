@@ -6,53 +6,7 @@
     <title>Daily Achievement Leaderboard</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f4f4f4;
-            padding: 20px;
-            text-align: center;
-        }
-        h1 {
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
-        .leaderboard-container {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-        }
-        .table {
-            width: 80%;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        .btn-container {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
-        .filter-container {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
-        .clock {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-        .alert {
-            margin-top: 20px;
-            width: 80%;
-            max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <div class="container">
@@ -104,12 +58,7 @@
                             <div class="mb-3">
                                 <label for="user" class="form-label">Select User</label>
                                 <select id="user" class="form-select">
-                                    <!-- Example users -->
-                                    <option value="IKHMAL">IKHMAL</option>
-                                    <option value="AZIB">AZIB</option>
-                                    <option value="ERFAN">ERFAN</option>
-                                    <option value="Marketplace">Marketplace</option>
-                                    <option value="B2B">B2B</option>
+                                    <!-- Options will be populated dynamically -->
                                 </select>
                             </div>
                             <div class="mb-3">
@@ -130,103 +79,6 @@
 
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script>
-        let leaderboardData = [
-            { name: 'IKHMAL', todaySales: 0, target: 1320 },
-            { name: 'AZIB', todaySales: 330, target: 1451.6 },
-            { name: 'ERFAN', todaySales: 374.20, target: 1225.8 },
-            { name: 'Marketplace', todaySales: 0, target: 0 },
-            { name: 'B2B', todaySales: 0, target: 0 },
-        ];
-
-        function renderLeaderboard() {
-            const tbody = document.getElementById('leaderboard');
-            tbody.innerHTML = ''; // Clear current rows
-
-            leaderboardData.sort((a, b) => b.todaySales - a.todaySales);
-
-            leaderboardData.forEach((entry, index) => {
-                const row = `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>${entry.name}</td>
-                        <td>RM${entry.todaySales.toFixed(2)}</td>
-                        <td>RM${entry.target.toFixed(2)}</td>
-                    </tr>
-                `;
-                tbody.innerHTML += row;
-            });
-
-            updateTotalSalesAlert();
-        }
-
-        function updateSales() {
-            const user = document.getElementById('user').value;
-            const sales = parseFloat(document.getElementById('sales').value);
-            const target = parseFloat(document.getElementById('target').value);
-
-            const entry = leaderboardData.find(item => item.name === user);
-            if (entry) {
-                entry.todaySales += sales;
-                if (!isNaN(target)) entry.target = target;
-                const timestamp = new Date().toLocaleString();
-                console.log(`Updated ${user} with RM${sales.toFixed(2)} sales and target RM${target.toFixed(2)} on ${timestamp}`);
-            }
-
-            renderLeaderboard();
-            const modal = bootstrap.Modal.getInstance(document.getElementById('updateModal'));
-            modal.hide();
-        }
-
-        function resetLeaderboard() {
-            leaderboardData = leaderboardData.map(entry => ({
-                ...entry,
-                todaySales: 0,
-                target: entry.target // Keep the target the same
-            }));
-            renderLeaderboard();
-        }
-
-        function updateTotalSalesAlert() {
-            const totalSales = leaderboardData.reduce((sum, entry) => sum + entry.todaySales, 0);
-            const totalSalesAlert = document.getElementById('totalSalesAlert');
-            totalSalesAlert.innerText = `Total Sales for Today: RM${totalSales.toFixed(2)}`;
-        }
-
-        function exportData() {
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "Rank,Name,Daily Sales,Target Sales\n";
-
-            leaderboardData.forEach((entry, index) => {
-                const row = `${index + 1},${entry.name},RM${entry.todaySales.toFixed(2)},RM${entry.target.toFixed(2)}`;
-                csvContent += row + "\n";
-            });
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "daily_achievement_leaderboard.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function updateClock() {
-            const clockElement = document.getElementById('clock');
-            const now = new Date();
-            clockElement.innerText = now.toLocaleString();
-        }
-
-        function filterByDate(period) {
-            alert(`Filtering leaderboard by: ${period}`); // Placeholder for the actual filter logic
-            // Implement actual filtering logic based on the selected period
-        }
-
-        // Initial render
-        renderLeaderboard();
-        updateClock();
-        setInterval(updateClock, 1000); // Update the clock every second
-    </script>
+    <script src="js/script.js"></script>
 </body>
 </html>

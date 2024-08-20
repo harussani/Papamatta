@@ -17,8 +17,8 @@ function renderLeaderboard() {
         const row = `
             <tr>
                 <td>${index + 1}</td>
-                <td>
-                    <img align="left" src="assets/user_photos/${entry.photo}" alt="${entry.name}">
+                <td align="left" >
+                    <img src="assets/user_photos/${entry.photo}" alt="${entry.name}">
                     ${entry.name}
                 </td>
                 <td>RM${entry.todaySales.toFixed(2)}</td>

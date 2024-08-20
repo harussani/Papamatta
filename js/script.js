@@ -6,10 +6,13 @@ async function loadConfig() {
         if (!response.ok) throw new Error('Failed to load configuration file');
         const data = await response.json();
         leaderboardData = data.users;
+        if (leaderboardData.length === 0) {
+            throw new Error('No user data found in the configuration file');
+        }
         renderLeaderboard();
         populateUserSelect();
     } catch (error) {
-        console.error(error);
+        console.error('Error loading config:', error.message);
         showNoUserDataAlert();
     }
 }
@@ -29,7 +32,7 @@ function renderLeaderboard() {
         const row = `
             <tr>
                 <td>${index + 1}</td>
-                <td align="left">
+                <td>
                     <img src="assets/user_photos/${entry.photo}" alt="${entry.name}">
                     ${entry.name}
                 </td>

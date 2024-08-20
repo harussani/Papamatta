@@ -44,6 +44,14 @@
             font-weight: bold;
             margin-bottom: 20px;
         }
+        .alert {
+            margin-top: 20px;
+            width: 80%;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -65,13 +73,16 @@
                         <th>Name</th>
                         <th>Daily Sales</th>
                         <th>Target Sales</th>
-                        <th>Total Sales (Month)</th>
                     </tr>
                 </thead>
                 <tbody id="leaderboard">
                     <!-- Dynamic leaderboard rows will be inserted here -->
                 </tbody>
             </table>
+        </div>
+
+        <div class="alert alert-info" id="totalSalesAlert">
+            Total Sales for Today: RM0.00
         </div>
 
         <div class="btn-container">
@@ -122,11 +133,11 @@
 
     <script>
         let leaderboardData = [
-            { name: 'IKHMAL', todaySales: 0, monthSales: 0, target: 1320 },
-            { name: 'AZIB', todaySales: 330, monthSales: 0, target: 1451.6 },
-            { name: 'ERFAN', todaySales: 374.20, monthSales: 0, target: 1225.8 },
-            { name: 'Marketplace', todaySales: 0, monthSales: 0, target: 0 },
-            { name: 'B2B', todaySales: 0, monthSales: 0, target: 0 },
+            { name: 'IKHMAL', todaySales: 0, target: 1320 },
+            { name: 'AZIB', todaySales: 330, target: 1451.6 },
+            { name: 'ERFAN', todaySales: 374.20, target: 1225.8 },
+            { name: 'Marketplace', todaySales: 0, target: 0 },
+            { name: 'B2B', todaySales: 0, target: 0 },
         ];
 
         function renderLeaderboard() {
@@ -142,11 +153,12 @@
                         <td>${entry.name}</td>
                         <td>RM${entry.todaySales.toFixed(2)}</td>
                         <td>RM${entry.target.toFixed(2)}</td>
-                        <td>RM${entry.monthSales.toFixed(2)}</td>
                     </tr>
                 `;
                 tbody.innerHTML += row;
             });
+
+            updateTotalSalesAlert();
         }
 
         function updateSales() {
@@ -157,7 +169,6 @@
             const entry = leaderboardData.find(item => item.name === user);
             if (entry) {
                 entry.todaySales += sales;
-                entry.monthSales += sales;
                 if (!isNaN(target)) entry.target = target;
                 const timestamp = new Date().toLocaleString();
                 console.log(`Updated ${user} with RM${sales.toFixed(2)} sales and target RM${target.toFixed(2)} on ${timestamp}`);
@@ -172,18 +183,23 @@
             leaderboardData = leaderboardData.map(entry => ({
                 ...entry,
                 todaySales: 0,
-                monthSales: 0,
                 target: entry.target // Keep the target the same
             }));
             renderLeaderboard();
         }
 
+        function updateTotalSalesAlert() {
+            const totalSales = leaderboardData.reduce((sum, entry) => sum + entry.todaySales, 0);
+            const totalSalesAlert = document.getElementById('totalSalesAlert');
+            totalSalesAlert.innerText = `Total Sales for Today: RM${totalSales.toFixed(2)}`;
+        }
+
         function exportData() {
             let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "Rank,Name,Daily Sales,Target Sales,Total Sales (Month)\n";
+            csvContent += "Rank,Name,Daily Sales,Target Sales\n";
 
             leaderboardData.forEach((entry, index) => {
-                const row = `${index + 1},${entry.name},RM${entry.todaySales.toFixed(2)},RM${entry.target.toFixed(2)},RM${entry.monthSales.toFixed(2)}`;
+                const row = `${index + 1},${entry.name},RM${entry.todaySales.toFixed(2)},RM${entry.target.toFixed(2)}`;
                 csvContent += row + "\n";
             });
 

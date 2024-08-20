@@ -23,9 +23,6 @@
             margin-top: 20px;
             margin-right: 10px;
         }
-        #updateModal {
-            display: none;
-        }
         .clock {
             font-size: 24px;
             font-weight: bold;
@@ -55,7 +52,7 @@
             </table>
         </div>
 
-        <button class="btn btn-primary update-button" onclick="openUpdateModal()">Update Sales</button>
+        <button class="btn btn-primary update-button" data-mdb-toggle="modal" data-mdb-target="#updateModal">Update Sales</button>
         <button class="btn btn-success export-button" onclick="exportData()">Export Data</button>
 
         <!-- Update Modal -->
@@ -121,11 +118,6 @@
                 `;
                 tbody.innerHTML += row;
             });
-        }
-
-        function openUpdateModal() {
-            const modal = new mdb.Modal(document.getElementById('updateModal'));
-            modal.show();
         }
 
         function updateSales() {

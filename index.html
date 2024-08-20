@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sales Leaderboard</title>
+    <title>Daily Achievement Leaderboard</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -13,7 +13,7 @@
             padding: 20px;
             text-align: center;
         }
-        h1, h2 {
+        h1 {
             margin-top: 20px;
             margin-bottom: 20px;
         }
@@ -33,6 +33,12 @@
             justify-content: center;
             gap: 10px;
         }
+        .filter-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
         .clock {
             font-size: 24px;
             font-weight: bold;
@@ -42,8 +48,14 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center">Sales Leaderboard</h1>
+        <h1 class="text-center">Daily Achievement Leaderboard</h1>
         <div class="clock" id="clock"></div>
+
+        <div class="filter-container">
+            <button class="btn btn-outline-primary" onclick="filterByDate('today')">Today</button>
+            <button class="btn btn-outline-primary" onclick="filterByDate('week')">This Week</button>
+            <button class="btn btn-outline-primary" onclick="filterByDate('month')">This Month</button>
+        </div>
 
         <div class="leaderboard-container">
             <table class="table table-striped table-hover text-center">
@@ -51,9 +63,9 @@
                     <tr>
                         <th>Rank</th>
                         <th>Name</th>
-                        <th>Today's Sales</th>
+                        <th>Daily Sales</th>
+                        <th>Target Sales</th>
                         <th>Total Sales (Month)</th>
-                        <th>Target</th>
                     </tr>
                 </thead>
                 <tbody id="leaderboard">
@@ -65,6 +77,7 @@
         <div class="btn-container">
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Update Sales</button>
             <button class="btn btn-success" onclick="exportData()">Export Data</button>
+            <button class="btn btn-warning" onclick="resetLeaderboard()">Reset</button>
         </div>
 
         <!-- Update Modal -->
@@ -81,9 +94,11 @@
                                 <label for="user" class="form-label">Select User</label>
                                 <select id="user" class="form-select">
                                     <!-- Example users -->
-                                    <option value="John Doe">John Doe</option>
-                                    <option value="Jane Smith">Jane Smith</option>
-                                    <option value="Alice Johnson">Alice Johnson</option>
+                                    <option value="IKHMAL">IKHMAL</option>
+                                    <option value="AZIB">AZIB</option>
+                                    <option value="ERFAN">ERFAN</option>
+                                    <option value="Marketplace">Marketplace</option>
+                                    <option value="B2B">B2B</option>
                                 </select>
                             </div>
                             <div class="mb-3">
@@ -106,10 +121,12 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        const leaderboardData = [
-            { name: 'John Doe', todaySales: 200, monthSales: 5000, target: 7000 },
-            { name: 'Jane Smith', todaySales: 150, monthSales: 4500, target: 6500 },
-            { name: 'Alice Johnson', todaySales: 100, monthSales: 4200, target: 6000 },
+        let leaderboardData = [
+            { name: 'IKHMAL', todaySales: 0, monthSales: 0, target: 1320 },
+            { name: 'AZIB', todaySales: 330, monthSales: 0, target: 1451.6 },
+            { name: 'ERFAN', todaySales: 374.20, monthSales: 0, target: 1225.8 },
+            { name: 'Marketplace', todaySales: 0, monthSales: 0, target: 0 },
+            { name: 'B2B', todaySales: 0, monthSales: 0, target: 0 },
         ];
 
         function renderLeaderboard() {
@@ -123,9 +140,9 @@
                     <tr>
                         <td>${index + 1}</td>
                         <td>${entry.name}</td>
-                        <td>${entry.todaySales}</td>
-                        <td>${entry.monthSales}</td>
-                        <td>${entry.target}</td>
+                        <td>RM${entry.todaySales.toFixed(2)}</td>
+                        <td>RM${entry.target.toFixed(2)}</td>
+                        <td>RM${entry.monthSales.toFixed(2)}</td>
                     </tr>
                 `;
                 tbody.innerHTML += row;
@@ -134,16 +151,16 @@
 
         function updateSales() {
             const user = document.getElementById('user').value;
-            const sales = parseInt(document.getElementById('sales').value);
-            const target = parseInt(document.getElementById('target').value);
+            const sales = parseFloat(document.getElementById('sales').value);
+            const target = parseFloat(document.getElementById('target').value);
 
             const entry = leaderboardData.find(item => item.name === user);
             if (entry) {
                 entry.todaySales += sales;
                 entry.monthSales += sales;
-                if (target) entry.target = target;
+                if (!isNaN(target)) entry.target = target;
                 const timestamp = new Date().toLocaleString();
-                console.log(`Updated ${user} with ${sales} sales and target ${target} on ${timestamp}`);
+                console.log(`Updated ${user} with RM${sales.toFixed(2)} sales and target RM${target.toFixed(2)} on ${timestamp}`);
             }
 
             renderLeaderboard();
@@ -151,19 +168,29 @@
             modal.hide();
         }
 
+        function resetLeaderboard() {
+            leaderboardData = leaderboardData.map(entry => ({
+                ...entry,
+                todaySales: 0,
+                monthSales: 0,
+                target: entry.target // Keep the target the same
+            }));
+            renderLeaderboard();
+        }
+
         function exportData() {
             let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "Rank,Name,Today's Sales,Total Sales (Month),Target\n";
+            csvContent += "Rank,Name,Daily Sales,Target Sales,Total Sales (Month)\n";
 
             leaderboardData.forEach((entry, index) => {
-                const row = `${index + 1},${entry.name},${entry.todaySales},${entry.monthSales},${entry.target}`;
+                const row = `${index + 1},${entry.name},RM${entry.todaySales.toFixed(2)},RM${entry.target.toFixed(2)},RM${entry.monthSales.toFixed(2)}`;
                 csvContent += row + "\n";
             });
 
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "sales_leaderboard.csv");
+            link.setAttribute("download", "daily_achievement_leaderboard.csv");
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -173,6 +200,11 @@
             const clockElement = document.getElementById('clock');
             const now = new Date();
             clockElement.innerText = now.toLocaleString();
+        }
+
+        function filterByDate(period) {
+            alert(`Filtering leaderboard by: ${period}`); // Placeholder for the actual filter logic
+            // Implement actual filtering logic based on the selected period
         }
 
         // Initial render

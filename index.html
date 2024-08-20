@@ -1,39 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="css/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Achievement Leaderboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <main>
-        <div id="header">
-            <h1>Ranking</h1>
-            <button class="share">
-                <i class="ph ph-share-network"></i>
-            </button>
+    <div class="container">
+        <h1 class="text-center">Daily Achievement Leaderboard</h1>
+        <div class="clock" id="clock"></div>
+
+        <div class="filter-container">
+            <button class="btn btn-outline-primary" onclick="filterByDate('today')">Today</button>
+            <button class="btn btn-outline-primary" onclick="filterByDate('week')">This Week</button>
+            <button class="btn btn-outline-primary" onclick="filterByDate('month')">This Month</button>
         </div>
-        <div id="leaderboard">
-            <div class="ribbon"></div>
-            <table>
-                <!-- Rows will be populated dynamically by JavaScript -->
+
+        <div class="leaderboard-container">
+            <table class="table table-striped table-hover text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Rank</th>
+                        <th>Name</th>
+                        <th>Daily Sales</th>
+                        <th>Target Sales</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboard">
+                    <!-- Dynamic leaderboard rows will be inserted here -->
+                </tbody>
             </table>
-            <div id="buttons">
-                <button class="exit" onclick="exitPage()">Exit</button>
-                <button class="continue" onclick="continueGame()">Continue</button>
+        </div>
+
+        <div class="alert alert-info" id="totalSalesAlert">
+            Total Sales for Today: RM0.00
+        </div>
+
+        <div class="btn-container">
+            <button id="updateSalesBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal" disabled>Update Sales</button>
+            <button class="btn btn-success" onclick="exportData()">Export Data</button>
+            <button class="btn btn-warning" onclick="resetLeaderboard()">Reset</button>
+        </div>
+
+        <!-- Update Modal -->
+        <div id="updateModal" class="modal fade" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Update Sales</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="updateForm">
+                            <div id="userSelectContainer" class="mb-3">
+                                <label for="user" class="form-label">Select User</label>
+                                <select id="user" class="form-select">
+                                    <!-- Options will be populated dynamically -->
+                                </select>
+                                <div id="noUserDataAlert" class="alert alert-danger mt-3 d-none">
+                                    No user data available. Please check your configuration file.
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="sales" class="form-label">Sales Value</label>
+                                <input type="number" id="sales" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="target" class="form-label">Target Value</label>
+                                <input type="number" id="target" class="form-control">
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="updateSales()">Update</button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
-    </main>
+    </div>
 
-    <!-- JavaScript -->
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/script.js"></script>
 </body>
 </html>

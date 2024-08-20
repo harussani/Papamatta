@@ -1,15 +1,27 @@
 let leaderboardData = [];
 
 async function loadConfig() {
-    const response = await fetch('assets/config.json');
-    const data = await response.json();
-    leaderboardData = data.users;
-    renderLeaderboard();
+    try {
+        const response = await fetch('assets/config.json');
+        if (!response.ok) throw new Error('Failed to load configuration file');
+        const data = await response.json();
+        leaderboardData = data.users;
+        renderLeaderboard();
+        populateUserSelect();
+    } catch (error) {
+        console.error(error);
+        showNoUserDataAlert();
+    }
 }
 
 function renderLeaderboard() {
     const tbody = document.getElementById('leaderboard');
     tbody.innerHTML = ''; // Clear current rows
+
+    if (leaderboardData.length === 0) {
+        showNoUserDataAlert();
+        return;
+    }
 
     leaderboardData.sort((a, b) => b.todaySales - a.todaySales);
 
@@ -17,7 +29,7 @@ function renderLeaderboard() {
         const row = `
             <tr>
                 <td>${index + 1}</td>
-                <td align="left" >
+                <td align="left">
                     <img src="assets/user_photos/${entry.photo}" alt="${entry.name}">
                     ${entry.name}
                 </td>
@@ -29,6 +41,30 @@ function renderLeaderboard() {
     });
 
     updateTotalSalesAlert();
+}
+
+function populateUserSelect() {
+    const userSelect = document.getElementById('user');
+    userSelect.innerHTML = '';
+
+    if (leaderboardData.length === 0) {
+        showNoUserDataAlert();
+        return;
+    }
+
+    leaderboardData.forEach(user => {
+        const option = document.createElement('option');
+        option.value = user.name;
+        option.textContent = user.name;
+        userSelect.appendChild(option);
+    });
+
+    document.getElementById('updateSalesBtn').disabled = false; // Enable the update button
+}
+
+function showNoUserDataAlert() {
+    document.getElementById('noUserDataAlert').classList.remove('d-none');
+    document.getElementById('updateSalesBtn').disabled = true; // Disable the update button
 }
 
 function updateSales() {

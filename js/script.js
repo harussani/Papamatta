@@ -18,7 +18,7 @@ function renderLeaderboard() {
             <tr>
                 <td>${index + 1}</td>
                 <td>
-                    <img src="assets/user_photos/${entry.photo}" alt="${entry.name}">
+                    <img align="left" src="assets/user_photos/${entry.photo}" alt="${entry.name}">
                     ${entry.name}
                 </td>
                 <td>RM${entry.todaySales.toFixed(2)}</td>

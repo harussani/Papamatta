@@ -1,1 +1,10 @@
+{
+    "users": [
+        { "name": "IKHMAL", "todaySales": 0, "target": 1320, "photo": "ikhmal.jpg" },
+        { "name": "AZIB", "todaySales": 330, "target": 1451.6, "photo": "azib.jpg" },
+        { "name": "ERFAN", "todaySales": 374.20, "target": 1225.8, "photo": "erfan.jpg" },
+        { "name": "Marketplace", "todaySales": 0, "target": 0, "photo": "marketplace.jpg" },
+        { "name": "B2B", "todaySales": 0, "target": 0, "photo": "b2b.jpg" }
+    ]
+}
 

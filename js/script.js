@@ -32,7 +32,7 @@ function renderLeaderboard() {
         const row = `
             <tr>
                 <td>${index + 1}</td>
-                <td>
+                <td align="left">
                     <img src="assets/user_photos/${entry.photo}" alt="${entry.name}">
                     ${entry.name}
                 </td>

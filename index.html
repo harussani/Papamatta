@@ -40,7 +40,7 @@
         </div>
 
         <div class="btn-container">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Update Sales</button>
+            <button id="updateSalesBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal" disabled>Update Sales</button>
             <button class="btn btn-success" onclick="exportData()">Export Data</button>
             <button class="btn btn-warning" onclick="resetLeaderboard()">Reset</button>
         </div>
@@ -55,11 +55,14 @@
                     </div>
                     <div class="modal-body">
                         <form id="updateForm">
-                            <div class="mb-3">
+                            <div id="userSelectContainer" class="mb-3">
                                 <label for="user" class="form-label">Select User</label>
                                 <select id="user" class="form-select">
                                     <!-- Options will be populated dynamically -->
                                 </select>
+                                <div id="noUserDataAlert" class="alert alert-danger mt-3 d-none">
+                                    No user data available. Please check your configuration file.
+                                </div>
                             </div>
                             <div class="mb-3">
                                 <label for="sales" class="form-label">Sales Value</label>
